@@ -46,7 +46,7 @@ $(document).ready(function() {
             changeValue(this, fieldIndex);
         });
 
-        $(resetBtn).click(function() {
+        resetBtn.click(function() {
             reset();
         });
     }
@@ -68,21 +68,31 @@ $(document).ready(function() {
                 $(winConditions[index]).each(function(i, e) {
                     if (cells[e] === player) counter++;
                     if (counter === 3) {
-                        $(message).html(`Player ${player} wins!`);
-                        $(tds).off("click");
+                        message.html(`Player ${player} wins!`);
+                        tds.off("click");
                         moveNumber = 0;
                     }
                 });
             });
         }
-        if (moveNumber === 9) $(message).html("It's a draw");
+        if (moveNumber === 9) message.html("It's a draw");
         player === "X" ? (player = "O") : (player = "X");
+        if (player === "O" && moveNumber !== 0) compTurn();
+    }
+
+    function compTurn() {
+        tds.each(function(index, element) {
+            if (element.innerHTML === "") {
+                changeValue(element, index);
+                return false;
+            }
+        });
     }
 
     function reset() {
         cells = ["", "", "", "", "", "", "", "", ""];
         player = "X";
-        $(message).html("");
+        message.html("");
         drawTable();
     }
 });
