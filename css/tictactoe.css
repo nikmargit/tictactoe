@@ -1,17 +1,42 @@
-table {
-    margin: 10rem auto;
+body {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #05386b;
+    background-color: #5cdb95;
 }
 
-table,
-th,
-td {
-    border: 1px solid black;
-    background: #bada55;
+h1 img {
+    width: 330px;
+}
+
+table {
+    margin: 4rem auto;
+    font-size: 3rem;
+    font-weight: 700;
+    border-collapse: collapse;
     text-align: center;
 }
 
-th,
-td {
-    width: 50px;
-    height: 50px;
+table th,
+table td {
+    border: 0.3rem solid #05386b;
+    width: 110px;
+    height: 110px;
+}
+
+/*Remove outer border*/
+
+table tr:first-child td {
+    border-top: 0;
+}
+table tr:last-child td {
+    border-bottom: 0;
+}
+table tr td:first-child,
+table tr th:first-child {
+    border-left: 0;
+}
+table tr td:last-child,
+table tr th:last-child {
+    border-right: 0;
 }

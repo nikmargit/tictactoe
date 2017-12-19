@@ -1,67 +1,88 @@
-const table = document.getElementById("table");
-const message = document.getElementById("message");
-let cells = ["", "", "", "", "", "", "", "", ""];
-var player = true;
-let test, winner;
-let counter = 0;
-let winConditions = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-];
-refresh();
+$(document).ready(function() {
+    const tableDiv = $("#table");
+    const message = $("#message");
+    const resetBtn = $("#reset");
+    let cells = ["", "", "", "", "", "", "", "", ""];
+    let player = "X";
+    let tds, fieldIndex;
+    let moveNumber = 0;
+    let counter = 0;
+    let winConditions = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
 
-function refresh() {
-    table.innerHTML = `<table>
-          <tr><td>${cells[0]}</td><td>${cells[1]}</td><td>${
-        cells[2]
-    }</td></tr><tr><td>${cells[3]}</td><td>${cells[4]}</td><td>${
-        cells[5]
-    }</td></tr><tr><td>${cells[6]}</td><td>${cells[7]}</td><td>${
-        cells[8]
-    }</td></tr></table>`;
-    test = Array.from(document.getElementsByTagName("td"));
-    test.forEach(element => {
-        element.addEventListener("click", changeValue);
-    });
-}
+    drawTable();
 
-function changeValue() {
-    if (this.innerHTML !== "X" && this.innerHTML !== "O") {
-        if (player) {
-            this.innerHTML = "X";
-            cells[test.indexOf(this)] = "X";
-            winner = "X";
-        } else {
-            this.innerHTML = "O";
-            cells[test.indexOf(this)] = "O";
-            winner = "O";
-        }
-    }
-    player = !player;
-    refresh();
-    checkWinner();
-}
+    function drawTable() {
+        tableDiv.empty();
+        let table = $("<table>");
+        let tr, td;
+        $.each(cells, function(index) {
+            if (index % 3 === 0) {
+                tr = $("<tr>");
+            }
+            td = $("<td>");
+            td.html(cells[index]);
+            tr.append(td);
+            table.append(tr);
+        });
+        tableDiv.append(table);
 
-function checkWinner() {
-    for (let i = 0; i < winConditions.length; i++) {
-        counter = 0;
-        for (let a = 0; a < winConditions[i].length; a++) {
-            if (cells[winConditions[i][a]] === "X") counter++;
-            if (counter == 3) message.innerHTML = `Player X wins!`;
-        }
+        setListeners();
     }
 
-    for (let i = 0; i < winConditions.length; i++) {
-        counter = 0;
-        for (let a = 0; a < winConditions[i].length; a++) {
-            if (cells[winConditions[i][a]] === "O") counter++;
-            if (counter == 3) message.innerHTML = `Player O wins!`;
+    function setListeners() {
+        tds = $("td");
+
+        tds.click(function() {
+            fieldIndex = $(tds).index(this);
+            changeValue(this, fieldIndex);
+        });
+
+        $(resetBtn).click(function() {
+            reset();
+        });
+    }
+
+    function changeValue(field, fieldIndex) {
+        if (field.innerHTML === "") {
+            $(field).html(player);
+            cells[fieldIndex] = player;
+
+            moveNumber++;
+            checkWinner();
         }
     }
-}
+
+    function checkWinner() {
+        if (moveNumber > 4) {
+            $(winConditions).each(function(index, element) {
+                counter = 0;
+                $(winConditions[index]).each(function(i, e) {
+                    if (cells[e] === player) counter++;
+                    if (counter === 3) {
+                        $(message).html(`Player ${player} wins!`);
+                        $(tds).off("click");
+                        moveNumber = 0;
+                    }
+                });
+            });
+        }
+        if (moveNumber === 9) $(message).html("It's a draw");
+        player === "X" ? (player = "O") : (player = "X");
+    }
+
+    function reset() {
+        cells = ["", "", "", "", "", "", "", "", ""];
+        player = "X";
+        $(message).html("");
+        drawTable();
+    }
+});
