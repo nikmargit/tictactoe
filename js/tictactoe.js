@@ -42,8 +42,10 @@ $(document).ready(function() {
         tds = $("td");
 
         tds.click(function() {
-            fieldIndex = $(tds).index(this);
-            changeValue(this, fieldIndex);
+            if ($(this).html() === "") {
+                fieldIndex = $(tds).index(this);
+                changeValue(fieldIndex);
+            }
         });
 
         resetBtn.click(function() {
@@ -51,19 +53,17 @@ $(document).ready(function() {
         });
     }
 
-    function changeValue(field, fieldIndex) {
-        if (field.innerHTML === "") {
-            $(field).html(player);
-            cells[fieldIndex] = player;
+    function changeValue(fieldIndex) {
+        $(tds[fieldIndex]).html(player);
+        cells[fieldIndex] = player;
 
-            moveNumber++;
-            checkWinner();
-        }
+        moveNumber++;
+        checkWinner();
     }
 
     function checkWinner() {
         if (moveNumber > 4) {
-            $(winConditions).each(function(index, element) {
+            $(winConditions).each(function(index) {
                 counter = 0;
                 $(winConditions[index]).each(function(i, e) {
                     if (cells[e] === player) counter++;
@@ -81,9 +81,9 @@ $(document).ready(function() {
     }
 
     function compTurn() {
-        tds.each(function(index, element) {
-            if (element.innerHTML === "") {
-                changeValue(element, index);
+        $(cells).each(function(index) {
+            if (cells[index] === "") {
+                changeValue(index);
                 return false;
             }
         });
