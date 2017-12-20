@@ -30,8 +30,7 @@ $(document).ready(function() {
             }
             td = $("<td>");
             td.html(cells[index]);
-            tr.append(td);
-            table.append(tr);
+            table.append(tr.append(td));
         });
         tableDiv.append(table);
 
